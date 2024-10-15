@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SearchBar from './components/SearchBar';
 import MovieList from './components/MovieList';
 import MovieDetails from './components/MovieDetails';
-import Home from './components/Home'; // Home bileşenini import et
+import HomePage from './components/HomePage'; // Yeni eklenen bileşen
 
 const App = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState('');
+  const [popularMovies, setPopularMovies] = useState([]);
+  const [topRatedMovies, setTopRatedMovies] = useState([]);
+  const [latestMovies, setLatestMovies] = useState([]);
   const apiKey = '3f6e73a6bb66dca3b3b721ba203104b1';
 
+  // Kategoriler için film verilerini al
   useEffect(() => {
     const fetchGenres = async () => {
       const response = await fetch(
@@ -20,7 +24,34 @@ const App = () => {
       setGenres(data.genres);
     };
 
+    const fetchPopularMovies = async () => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`
+      );
+      const data = await response.json();
+      setPopularMovies(data.results.slice(0, 5)); // İlk 5 filmi al
+    };
+
+    const fetchTopRatedMovies = async () => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}`
+      );
+      const data = await response.json();
+      setTopRatedMovies(data.results.slice(0, 5)); // İlk 5 filmi al
+    };
+
+    const fetchLatestMovies = async () => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}`
+      );
+      const data = await response.json();
+      setLatestMovies(data.results.slice(0, 5)); // İlk 5 filmi al
+    };
+
     fetchGenres();
+    fetchPopularMovies();
+    fetchTopRatedMovies();
+    fetchLatestMovies();
   }, []);
 
   const handleSearch = (query) => {
@@ -52,8 +83,16 @@ const App = () => {
           setSelectedGenre={setSelectedGenre}
         />
         <Routes>
-          <Route path="/" element={<Home apiKey={apiKey} />} />{' '}
-          {/* Home bileşeni */}
+          <Route
+            path="/"
+            element={
+              <HomePage
+                popularMovies={popularMovies}
+                topRatedMovies={topRatedMovies}
+                latestMovies={latestMovies}
+              />
+            }
+          />
           <Route
             path="/search/:query"
             element={<MovieList movies={searchResults} />}
