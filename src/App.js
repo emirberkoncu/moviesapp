@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SearchBar from './components/SearchBar';
 import MovieList from './components/MovieList';
 import MovieDetails from './components/MovieDetails';
+import Home from './components/Home'; // Home bileşenini import et
 
 const App = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -35,6 +36,7 @@ const App = () => {
         console.error('Hata:', error);
       });
   };
+
   return (
     <Router className="app min-h-screen bg-gray-100 m-4">
       <div>
@@ -50,10 +52,12 @@ const App = () => {
           setSelectedGenre={setSelectedGenre}
         />
         <Routes>
+          <Route path="/" element={<Home apiKey={apiKey} />} />{' '}
+          {/* Home bileşeni */}
           <Route
             path="/search/:query"
             element={<MovieList movies={searchResults} />}
-          />{' '}
+          />
           <Route path="/movies/:id" element={<MovieDetails />} />
         </Routes>
       </div>
