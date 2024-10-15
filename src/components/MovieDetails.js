@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import RandomFilms from './RandomFilms'; // RandomFilms bileşenini ekleyin
 
-const MovieDetails = () => {
+const MovieDetails = ({ addToWatchlist }) => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [trailer, setTrailer] = useState(null);
@@ -31,6 +31,12 @@ const MovieDetails = () => {
 
     fetchMovieDetails();
   }, [id]);
+  const handleAddToWatchlist = () => {
+    if (movie) {
+      addToWatchlist(movie); // Watchlist'e ekle
+      console.log('eklendi');
+    }
+  };
 
   if (!movie) {
     return <div>Yükleniyor...</div>;
@@ -66,6 +72,12 @@ const MovieDetails = () => {
               {movie.title}
             </a>
           </h1>
+          <button
+            onClick={handleAddToWatchlist}
+            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+          >
+            Add to Watch List
+          </button>
           <p className="mt-4">{movie.overview}</p>
           <div className="mt-4">
             <span className="font-bold">Yayın Yılı:</span>{' '}

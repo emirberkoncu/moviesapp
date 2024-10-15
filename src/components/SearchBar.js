@@ -28,9 +28,9 @@ const SearchBar = ({ onSearch }) => {
           value={query}
           onChange={handleInputChange}
           placeholder="Film adı ile ara..."
-          className="border p-2 rounded w-full" // Soldan padding ekleyin
+          className="border  p-2 pr-10 rounded w-[900px] "
         />
-        <span className="absolute right-2 top-2 text-gray-500 hover:text-blue-400 cursor-pointer">
+        <span className="absolute left-[870px] top-2 text-gray-500 hover:text-blue-400 cursor-pointer">
           <i onClick={handleIconClick} className="fas fa-search"></i>{' '}
         </span>
       </div>

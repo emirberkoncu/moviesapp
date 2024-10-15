@@ -4,6 +4,8 @@ import SearchBar from './components/SearchBar';
 import MovieList from './components/MovieList';
 import MovieDetails from './components/MovieDetails';
 import HomePage from './components/HomePage'; // Yeni eklenen bileşen
+import Header from './components/Header';
+import WatchList from './components/WatchList';
 
 const App = () => {
   const [searchResults, setSearchResults] = useState([]);
@@ -12,6 +14,7 @@ const App = () => {
   const [popularMovies, setPopularMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [latestMovies, setLatestMovies] = useState([]);
+  const [watchList, setWatchList] = useState([]);
   const apiKey = '3f6e73a6bb66dca3b3b721ba203104b1';
 
   // Kategoriler için film verilerini al
@@ -67,16 +70,31 @@ const App = () => {
         console.error('Hata:', error);
       });
   };
+  const addToWatchList = (movie) => {
+    setWatchList((prevList) => {
+      if (!prevList.some((item) => item.id === movie.id)) {
+        return [...prevList, movie];
+      }
+      return prevList;
+    });
+  };
+
+  const removeFromWatchList = (movieId) => {
+    setWatchList((prevList) =>
+      prevList.filter((movie) => movie.id !== movieId)
+    );
+  };
 
   return (
-    <Router className="app min-h-screen bg-gray-100 m-4">
+    <Router className="min-h-screen bg-gray-100 m-4">
       <div>
-        <div className="text-center mb-3 mt-3">
-          <Link to={'/'} className="text-2xl font-bold text-center">
-            Movie Search Application
-          </Link>
-        </div>
-        <SearchBar
+        {/* <SearchBar
+          onSearch={handleSearch}
+          genres={genres}
+          selectedGenre={selectedGenre}
+          setSelectedGenre={setSelectedGenre}
+        /> */}
+        <Header
           onSearch={handleSearch}
           genres={genres}
           selectedGenre={selectedGenre}
@@ -97,7 +115,20 @@ const App = () => {
             path="/search/:query"
             element={<MovieList movies={searchResults} />}
           />
-          <Route path="/movies/:id" element={<MovieDetails />} />
+          <Route
+            path="/movies/:id"
+            element={<MovieDetails addToWatchlist={addToWatchList} />}
+          />
+          <Route
+            exact
+            path="/watchlist"
+            element={
+              <WatchList
+                watchList={watchList}
+                removeFromWatchList={removeFromWatchList}
+              />
+            }
+          />
         </Routes>
       </div>
     </Router>
